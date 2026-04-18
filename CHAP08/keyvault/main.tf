@@ -5,6 +5,10 @@ terraform {
     azurerm = {
       version = "~> 3.23"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.5.1"
+    }
   }
 }
 
@@ -12,7 +16,11 @@ provider "azurerm" {
   features {}
 }
 
-
+resource "random_string" "random" {
+  length  = 4
+  special = false
+  upper   = false
+}
 
 data "azurerm_key_vault" "keyvault" {
   name                = "keyvdemobook"
@@ -39,7 +47,7 @@ resource "azurerm_service_plan" "plan-app" {
 }
 
 resource "azurerm_linux_web_app" "app" {
-  name                = "demovaultbook"
+  name                = "demovaultbook-${random_string.random.result}"
   location            = azurerm_resource_group.rg-app.location
   resource_group_name = azurerm_resource_group.rg-app.name
   service_plan_id     = azurerm_service_plan.plan-app.id

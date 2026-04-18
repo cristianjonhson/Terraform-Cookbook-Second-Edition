@@ -16,40 +16,40 @@ resource "azurerm_resource_group" "rg" {
   location = "westeurope"
 }
 
-resource "azurerm_service_plan" "plan" {
-  name                = "Plan-AppRefactobook"
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet1"
+  address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  sku_name            = "S1"
-  os_type             = "Linux"
+}
+
+resource "azurerm_subnet" "snet1" {
+  name                 = "subnet1"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_subnet" "snet2" {
+  name                 = "subnet2"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
 
-# resource "azurerm_linux_web_app" "app1" {
-#   name                = "MyAppRefactbook-1"
-#   location            = azurerm_resource_group.rg.location
-#   resource_group_name = azurerm_resource_group.rg.name
-#   service_plan_id     = azurerm_service_plan.plan.id
-#   site_config {}
+# locals {
+#   subnet_list = {
+#     subnet1 = "10.0.1.0/24"
+#     subnet2 = "10.0.2.0/24"
+#   }
 # }
 
-# resource "azurerm_linux_web_app" "app2" {
-#   name                = "MyAppRefactbook-2"
-#   location            = azurerm_resource_group.rg.location
-#   resource_group_name = azurerm_resource_group.rg.name
-#   service_plan_id     = azurerm_service_plan.plan.id
-#   site_config {}
+# resource "azurerm_subnet" "snetlist" {
+#   for_each             = local.subnet_list
+#   name                 = each.key
+#   resource_group_name  = azurerm_resource_group.rg.name
+#   virtual_network_name = azurerm_virtual_network.vnet.name
+#   address_prefixes     = [each.value]
 # }
-
-locals {
-  webapp_list = ["MyAppRefactbook-1", "MyAppRefactbook-2"]
-}
-
-resource "azurerm_linux_web_app" "apps" {
-  for_each            = toset(local.webapp_list)
-  name                = each.value
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_service_plan.plan.id
-  site_config {}
-}

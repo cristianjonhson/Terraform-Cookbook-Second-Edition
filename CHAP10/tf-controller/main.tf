@@ -1,4 +1,5 @@
 terraform {
+  required_version = "~> 1.1"
   required_providers {
     helm = {
       source  = "hashicorp/helm"
@@ -9,7 +10,6 @@ terraform {
 
 provider "helm" {
   kubernetes {
-    config_path = pathexpand("~/.kube/config")
   }
 }
 

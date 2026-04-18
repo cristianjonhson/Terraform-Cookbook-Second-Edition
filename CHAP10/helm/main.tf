@@ -1,4 +1,5 @@
 terraform {
+  required_version = "~> 1.1"
   required_providers {
     helm = {
       source  = "hashicorp/helm"
@@ -9,22 +10,8 @@ terraform {
 
 provider "helm" {
   kubernetes {
-    config_path = pathexpand("~/.kube/config")
   }
 }
-
-# provider "kubernetes" {
-#   config_path = pathexpand("~/.kube/config")
-# }
-
-# resource "kubernetes_namespace" "ns" {
-#   metadata {
-#     labels = {
-#       mylabel = "ingress"
-#     }
-#     name = "ingress"
-#   }
-# }
 
 
 resource "helm_release" "nginx_ingress" {

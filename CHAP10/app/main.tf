@@ -1,4 +1,5 @@
 terraform {
+  required_version = "~> 1.1"
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -8,7 +9,6 @@ terraform {
 }
 
 provider "kubernetes" {
-  config_path = pathexpand("~/.kube/config")
 }
 
 resource "kubernetes_namespace" "ns" {
@@ -24,7 +24,7 @@ resource "kubernetes_namespace" "ns" {
 resource "kubernetes_deployment" "deployment" {
   metadata {
     name      = "webapp"
-    namespace = kubernetes_namespace.ns.metadata.0.name
+    namespace = kubernetes_namespace.ns.metadata[0].name
     labels = {
       app = "webapp"
     }
@@ -59,11 +59,11 @@ resource "kubernetes_deployment" "deployment" {
 resource "kubernetes_service" "service" {
   metadata {
     name      = "webapp"
-    namespace = kubernetes_namespace.ns.metadata.0.name
+    namespace = kubernetes_namespace.ns.metadata[0].name
   }
   spec {
     selector = {
-      app = kubernetes_deployment.deployment.metadata.0.labels.app
+      app = kubernetes_deployment.deployment.metadata[0].labels.app
     }
 
     port {

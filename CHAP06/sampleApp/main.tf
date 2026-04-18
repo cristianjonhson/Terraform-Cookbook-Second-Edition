@@ -15,12 +15,6 @@ provider "azurerm" {
   features {}
 }
 
-locals {
-  common_app_settings = {
-    "INSTRUMENTATIONKEY" = azurerm_application_insights.appinsight-app.instrumentation_key
-  }
-}
-
 resource "random_string" "random" {
   length  = 4
   special = false
@@ -41,7 +35,7 @@ resource "azurerm_service_plan" "plan-app" {
   resource_group_name = azurerm_resource_group.rg-app.name
 
   os_type  = "Linux"
-  sku_name = "P1v2"
+  sku_name = "B2"
 
   tags = {
     ENV       = var.environment

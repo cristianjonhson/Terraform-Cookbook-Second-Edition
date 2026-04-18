@@ -1,12 +1,26 @@
 
 terraform {
-  required_version = ">= 1.0"
+  required_version = "~> 1.1"
+  required_providers {
+    azurerm = {
+      version = "~> 3.35"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.5.1"
+    }
+  }
 }
 
 provider "azurerm" {
   features {}
 }
 
+resource "random_string" "random" {
+  length  = 4
+  special = false
+  upper   = false
+}
 
 resource "azurerm_resource_group" "rg-app" {
   name     = "RG-DEMO-ARM"
@@ -20,11 +34,10 @@ resource "azurerm_service_plan" "plan-app" {
 
   os_type  = "Windows"
   sku_name = "S1"
-
 }
 
 resource "azurerm_linux_web_app" "app" {
-  name                = "webapparm"
+  name                = "webapparm${random_string.random.result}"
   location            = azurerm_resource_group.rg-app.location
   resource_group_name = azurerm_resource_group.rg-app.name
   service_plan_id     = azurerm_service_plan.plan-app.id

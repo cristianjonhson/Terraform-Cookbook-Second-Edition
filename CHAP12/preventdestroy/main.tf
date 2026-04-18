@@ -15,12 +15,6 @@ provider "azurerm" {
   features {}
 }
 
-locals {
-  common_app_settings = {
-    "INSTRUMENTATIONKEY" = azurerm_application_insights.appinsight-app.instrumentation_key
-  }
-}
-
 resource "random_string" "random" {
   length  = 4
   special = false
@@ -69,7 +63,8 @@ resource "azurerm_application_insights" "appinsight-app" {
     CreatedBy = var.createdby
   }
 
-  lifecycle {
-    prevent_destroy = false
-  }
+  # To add to prevent destro the resource
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }

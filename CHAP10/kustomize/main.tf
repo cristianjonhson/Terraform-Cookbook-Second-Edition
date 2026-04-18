@@ -1,5 +1,6 @@
 
 terraform {
+  required_version = "~> 1.1"
   required_providers {
     kustomization = {
       source  = "kbst/kustomization"
@@ -9,7 +10,6 @@ terraform {
 }
 
 provider "kustomization" {
-  kubeconfig_path = pathexpand("~/.kube/config")
 }
 
 variable "environment" {

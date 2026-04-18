@@ -3,7 +3,7 @@
 
 provider "registry.terraform.io/chilicat/pkcs12" {
   version     = "0.0.7"
-  constraints = "~> 0.0"
+  constraints = "0.0.7"
   hashes = [
     "h1:YH7CVRfoqapMV0Vra8EXqR1ziOJ54m4dSl0w48tlzkU=",
     "zh:0890343e35d99263280abb8c8e035aa7ae0e201619a134b4a01076b27614124b",
@@ -43,7 +43,8 @@ provider "registry.terraform.io/hashicorp/local" {
 }
 
 provider "registry.terraform.io/hashicorp/random" {
-  version = "3.5.1"
+  version     = "3.5.1"
+  constraints = "3.5.1"
   hashes = [
     "h1:VSnd9ZIPyfKHOObuQCaKfnjIHRtR7qTw19Rz8tJxm+k=",
     "zh:04e3fbd610cb52c1017d282531364b9c53ef72b6bc533acb2a90671957324a64",
@@ -62,7 +63,8 @@ provider "registry.terraform.io/hashicorp/random" {
 }
 
 provider "registry.terraform.io/hashicorp/tls" {
-  version = "4.0.4"
+  version     = "4.0.4"
+  constraints = "4.0.4"
   hashes = [
     "h1:pe9vq86dZZKCm+8k1RhzARwENslF3SXb9ErHbQfgjXU=",
     "zh:23671ed83e1fcf79745534841e10291bbf34046b27d6e68a5d0aab77206f4a55",

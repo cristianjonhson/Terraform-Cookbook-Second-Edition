@@ -1,4 +1,5 @@
 terraform {
+  required_version = "~> 1.1"
   required_providers {
     kind = {
       source  = "tehcyx/kind"
@@ -9,12 +10,9 @@ terraform {
 
 provider "kind" {}
 
-locals {
-  k8s_config_path = pathexpand("~/.kube/config")
-}
 
 resource "kind_cluster" "default" {
   name            = "cluster-book"
   wait_for_ready  = true
-  kubeconfig_path = local.k8s_config_path
+  kubeconfig_path = ".kube/conf"
 }

@@ -6,19 +6,13 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "2.3.0"
+      version = "3.5.1"
     }
   }
 }
 
 provider "azurerm" {
   features {}
-}
-
-locals {
-  common_app_settings = {
-    "INSTRUMENTATIONKEY" = azurerm_application_insights.appinsight-app.instrumentation_key
-  }
 }
 
 resource "random_string" "random" {
@@ -40,7 +34,7 @@ resource "azurerm_service_plan" "plan-app" {
   location            = azurerm_resource_group.rg-app.location
   resource_group_name = azurerm_resource_group.rg-app.name
 
-  os_type  = "Windows"
+  os_type  = "Linux"
   sku_name = "S1"
 
   tags = {

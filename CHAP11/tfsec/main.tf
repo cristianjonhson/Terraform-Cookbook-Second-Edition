@@ -1,8 +1,8 @@
 terraform {
+  required_version = "~> 1.1"
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = "~> 3.35"
     }
   }
 }
@@ -22,6 +22,7 @@ resource "azurerm_storage_account" "storage" {
   location                  = azurerm_resource_group.rg.location
   account_tier              = "Standard"
   account_replication_type  = "GRS"
-  enable_https_traffic_only = false #false
-  min_tls_version           = "TLS1_2"
+  enable_https_traffic_only = false #incorrect
+  #enable_https_traffic_only = false #correct
+  #min_tls_version           = "TLS1_2" #to add to be secure
 }

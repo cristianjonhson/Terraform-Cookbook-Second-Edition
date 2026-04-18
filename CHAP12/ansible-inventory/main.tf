@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/random"
       version = "3.5.1"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.4.0"
+    }
   }
 }
 
@@ -16,16 +20,6 @@ resource "random_string" "random" {
   length  = 4
   special = false
   upper   = false
-}
-
-variable "virtual_machines" {
-  default = [
-    {
-      dns        = "test1.test.cloud"
-      index      = "01"
-      address_ip = "0.0.0.1"
-    }
-  ]
 }
 
 
@@ -43,30 +37,37 @@ variable "vmhosts" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  location = "westeurope"
+  location = "westus"
   name     = "rg-ansible-inventory-${random_string.random.result}"
 }
 
-module "network" {
-  source              = "Azure/network/azurerm"
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet1"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  subnet_prefixes     = ["10.0.2.0/24"]
-  subnet_names        = ["subnet1"]
-  use_for_each        = true
+}
+
+resource "azurerm_subnet" "snet1" {
+  name                 = "subnet1"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
 }
 
 module "linuxservers" {
   source              = "Azure/compute/azurerm"
+  version             = "5.3.0"
   resource_group_name = azurerm_resource_group.rg.name
   vm_os_simple        = "UbuntuServer"
   nb_instances        = 2
   nb_public_ip        = 2
   vm_hostname         = "vmwebdemo-${random_string.random.result}"
-  #public_ip_dns       = ["${var.vmhosts}-${random_string.random.result}"]
-  vnet_subnet_id = module.network.vnet_subnets[0]
+  vnet_subnet_id      = azurerm_subnet.snet1.id
+  enable_ssh_key      = false
+  admin_username      = "adminuser"
+  admin_password      = "test123*"
 }
-
-
 
 resource "local_file" "inventory" {
   filename = "inventory"
@@ -74,16 +75,4 @@ resource "local_file" "inventory" {
     {
       vm_dnshost = zipmap(var.vmhosts, module.linuxservers.network_interface_private_ip)
   })
-}
-
-output "ips" {
-  value = module.linuxservers.public_ip_address
-}
-
-output "dns" {
-  value = module.linuxservers.public_ip_dns_name
-}
-
-output "test" {
-  value = zipmap(var.vmhosts, module.linuxservers.network_interface_private_ip)
 }

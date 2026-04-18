@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 0.13,<=1"
   required_providers {
     azurerm = {
       version = "2.10.0" # not available on darwin/arm64
@@ -13,6 +13,7 @@ provider "azurerm" {
 
 variable "resource_group_name" {
   default = "rg_test"
+  type    = string
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -24,6 +25,6 @@ resource "azurerm_public_ip" "pip" {
   name                         = "book-ip"
   location                     = "westeurope"
   resource_group_name          = azurerm_resource_group.rg.name
-  public_ip_address_allocation = "Dynamic"
+  allocation_method            = "Dynamic"
   domain_name_label            = "bookdevops"
 }
